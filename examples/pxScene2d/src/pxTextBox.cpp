@@ -439,7 +439,7 @@ void pxTextBox::measureTextWithWrapOrNewLine(const char *text, float sx, float s
         // Render what we had so far in accString; since we are here, it will fit.
         if (mTruncation != pxConstantsTruncation::NONE  && !mWordWrap && tempX + charW > mw)
         {
-            renderTextRowWithTruncation(accString, mw, 0, tempY, sx, sy, size, render);
+            renderTextRowWithTruncation(accString, mw-mx, 0, tempY, sx, sy, size, render);
             accString = "";
         }
         else
@@ -591,7 +591,7 @@ void pxTextBox::measureTextWithWrapOrNewLine(const char *text, float sx, float s
       lastLineNumber = lineNumber;
       if( mTruncation == pxConstantsTruncation::NONE && !mWordWrap ) {
         //rtLogDebug("CLF! Sending tempX instead of this->w(): %f\n", tempX);
-        renderOneLine(accString.cString(), 0, tempY, sx, sy, size, lineWidth, render);
+        renderOneLine(accString.cString(), 0, tempY, sx, sy, size, lineWidth-mx, render, isNewLineDetected);
       } else {
         // check if we need to truncate this last line
         if( !lastLine && mXStopPos != 0 && mAlignHorizontal == pxConstantsAlignHorizontal::LEFT
@@ -603,7 +603,7 @@ void pxTextBox::measureTextWithWrapOrNewLine(const char *text, float sx, float s
         {
             if (mTruncation != pxConstantsTruncation::NONE  && !mWordWrap && tempX + charW > mw)
             {
-                renderTextRowWithTruncation(accString, mw, 0, tempY, sx, sy, size, render);
+                renderTextRowWithTruncation(accString, mw-mx, 0, tempY, sx, sy, size, render);
             }
             else renderOneLine(accString.cString(), 0, tempY, sx, sy, size, this->w(), render);
         }
@@ -1207,7 +1207,7 @@ void pxTextBox::renderTextNoWordWrap(float sx, float sy, float tempX, bool rende
       // since we checked for NONE above.
       if(mTruncation == pxConstantsTruncation::TRUNCATE || mTruncation == pxConstantsTruncation::TRUNCATE_AT_WORD)
       {
-          renderTextRowWithTruncation(mText, lineWidth, tempX, tempY, sx, sy, mPixelSize, render);
+          renderTextRowWithTruncation(mText, lineWidth-(tempX+mx), tempX, tempY, sx, sy, mPixelSize, render);
       }
     }
   }
