@@ -1,0 +1,21 @@
+Index: nanosvg/src/nanosvgrast.h
+
+index 65ba2a796..dd16b1432 100755
+--- nanosvg.orig/src/nanosvg.h
++++ nanosvg/src/nanosvg.h
+@@ -1505,11 +1505,11 @@ static int nsvg__parseTransformArgs(const char* str, float* args, int maxNa, int
+ 
+ static int nsvg__parseMatrix(float* xform, const char* str)
+ {
+-	float t[6];
++	float t[9];
+ 	int na = 0;
+-	int len = nsvg__parseTransformArgs(str, t, 6, &na);
+-	if (na != 6) return len;
+-	memcpy(xform, t, sizeof(float)*6);
++	int len = nsvg__parseTransformArgs(str, t, 9, &na);
++	if (na != 9) return len;
++	memcpy(xform, t, sizeof(float)*9);
+ 	return len;
+ }
+ 
