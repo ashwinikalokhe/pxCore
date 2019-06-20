@@ -2,15 +2,8 @@ Index: nanosvg/src/nanosvgrast.h
 ===================================================================
 --- nanosvg.orig/src/nanosvgrast.h
 +++ nanosvg/src/nanosvgrast.h
-@@ -29,7 +29,6 @@
- extern "C" {
- #endif
- 
--struct NSVGimage; //fwd
- typedef struct NSVGrasterizer NSVGrasterizer;
- 
- /* Example Usage:
-@@ -60,6 +59,10 @@ void nsvgRasterize(NSVGrasterizer* r,
+
+@@ -62,6 +62,10 @@ void nsvgRasterize(NSVGrasterizer* r,
  				   NSVGimage* image, float tx, float ty, float scale,
  				   unsigned char* dst, int w, int h, int stride);
  
@@ -21,7 +14,7 @@ Index: nanosvg/src/nanosvgrast.h
  // Deletes rasterizer context.
  void nsvgDeleteRasterizer(NSVGrasterizer*);
  
-@@ -364,7 +367,7 @@ static void nsvg__flattenCubicBez(NSVGra
+@@ -368,7 +372,7 @@ static void nsvg__flattenCubicBez(NSVGrasterizer* r,
  	nsvg__flattenCubicBez(r, x1234,y1234, x234,y234, x34,y34, x4,y4, level+1, type);
  }
  
@@ -30,7 +23,7 @@ Index: nanosvg/src/nanosvgrast.h
  {
  	int i, j;
  	NSVGpath* path;
-@@ -372,19 +375,23 @@ static void nsvg__flattenShape(NSVGraste
+@@ -376,19 +380,23 @@ static void nsvg__flattenShape(NSVGrasterizer* r, NSVGshape* shape, float scale)
  	for (path = shape->paths; path != NULL; path = path->next) {
  		r->npoints = 0;
  		// Flatten path
@@ -57,7 +50,7 @@ Index: nanosvg/src/nanosvgrast.h
  enum NSVGpointFlags
  {
  	NSVG_PT_CORNER = 0x01,
-@@ -728,7 +735,7 @@ static void nsvg__prepareStroke(NSVGrast
+@@ -732,7 +740,7 @@ static void nsvg__prepareStroke(NSVGrasterizer* r, float miterLimit, int lineJoi
  	}
  }
  
@@ -66,7 +59,7 @@ Index: nanosvg/src/nanosvgrast.h
  {
  	int i, j, closed;
  	NSVGpath* path;
-@@ -736,15 +743,15 @@ static void nsvg__flattenShapeStroke(NSV
+@@ -740,15 +748,15 @@ static void nsvg__flattenShapeStroke(NSVGrasterizer* r, NSVGshape* shape, float
  	float miterLimit = shape->miterLimit;
  	int lineJoin = shape->strokeLineJoin;
  	int lineCap = shape->strokeLineCap;
@@ -85,7 +78,7 @@ Index: nanosvg/src/nanosvgrast.h
  		}
  		if (r->npoints < 2)
  			continue;
-@@ -790,7 +797,7 @@ static void nsvg__flattenShapeStroke(NSV
+@@ -794,7 +802,7 @@ static void nsvg__flattenShapeStroke(NSVGrasterizer* r, NSVGshape* shape, float
  				dashOffset -= shape->strokeDashArray[idash];
  				idash = (idash + 1) % shape->strokeDashCount;
  			}
@@ -94,7 +87,7 @@ Index: nanosvg/src/nanosvgrast.h
  
  			for (j = 1; j < r->npoints2; ) {
  				float dx = r->points2[j].x - cur.x;
-@@ -812,7 +819,7 @@ static void nsvg__flattenShapeStroke(NSV
+@@ -816,7 +824,7 @@ static void nsvg__flattenShapeStroke(NSVGrasterizer* r, NSVGshape* shape, float
  					// Advance dash pattern
  					dashState = !dashState;
  					idash = (idash+1) % shape->strokeDashCount;
@@ -103,7 +96,7 @@ Index: nanosvg/src/nanosvgrast.h
  					// Restart
  					cur.x = x;
  					cur.y = y;
-@@ -837,6 +844,11 @@ static void nsvg__flattenShapeStroke(NSV
+@@ -841,6 +849,11 @@ static void nsvg__flattenShapeStroke(NSVGrasterizer* r, NSVGshape* shape, float
  	}
  }
  
@@ -115,7 +108,7 @@ Index: nanosvg/src/nanosvgrast.h
  static int nsvg__cmpEdge(const void *p, const void *q)
  {
  	const NSVGedge* a = (const NSVGedge*)p;
-@@ -980,8 +992,8 @@ static inline int nsvg__div255(int x)
+@@ -984,8 +997,8 @@ static inline int nsvg__div255(int x)
      return ((x+1) * 257) >> 16;
  }
  
@@ -126,7 +119,7 @@ Index: nanosvg/src/nanosvgrast.h
  {
  
  	if (cache->type == NSVG_PAINT_COLOR) {
-@@ -1022,9 +1034,9 @@ static void nsvg__scanlineSolid(unsigned
+@@ -1026,9 +1039,9 @@ static void nsvg__scanlineSolid(unsigned char* dst, int count, unsigned char* co
  		int i, cr, cg, cb, ca;
  		unsigned int c;
  
@@ -139,7 +132,7 @@ Index: nanosvg/src/nanosvgrast.h
  
  		for (i = 0; i < count; i++) {
  			int r,g,b,a,ia;
-@@ -1067,9 +1079,9 @@ static void nsvg__scanlineSolid(unsigned
+@@ -1071,9 +1084,9 @@ static void nsvg__scanlineSolid(unsigned char* dst, int count, unsigned char* co
  		int i, cr, cg, cb, ca;
  		unsigned int c;
  
@@ -152,7 +145,7 @@ Index: nanosvg/src/nanosvgrast.h
  
  		for (i = 0; i < count; i++) {
  			int r,g,b,a,ia;
-@@ -1108,7 +1120,13 @@ static void nsvg__scanlineSolid(unsigned
+@@ -1112,17 +1125,23 @@ static void nsvg__scanlineSolid(unsigned char* dst, int count, unsigned char* co
  	}
  }
  
@@ -167,7 +160,19 @@ Index: nanosvg/src/nanosvgrast.h
  {
  	NSVGactiveEdge *active = NULL;
  	int y, s;
-@@ -1190,12 +1208,17 @@ static void nsvg__rasterizeSortedEdges(N
+ 	int e = 0;
+ 	int maxWeight = (255 / NSVG__SUBSAMPLES);  // weight per vertical scanline
+-	int xmin, xmax;
++	int xmin = 0, xmax = 0;
+ 
+ 	for (y = 0; y < r->height; y++) {
+ 		memset(r->scanline, 0, r->width);
+-		xmin = r->width;
++		xmin = (r->width > 0) ? r->width : 0;
+ 		xmax = 0;
+ 		for (s = 0; s < NSVG__SUBSAMPLES; ++s) {
+ 			// find center of pixel for this scanline
+@@ -1194,12 +1213,17 @@ static void nsvg__rasterizeSortedEdges(NSVGrasterizer *r, float tx, float ty, fl
  		if (xmin < 0) xmin = 0;
  		if (xmax > r->width-1) xmax = r->width-1;
  		if (xmin <= xmax) {
@@ -186,7 +191,7 @@ Index: nanosvg/src/nanosvgrast.h
  static void nsvg__unpremultiplyAlpha(unsigned char* image, int w, int h, int stride)
  {
  	int x,y;
-@@ -1358,9 +1381,9 @@ static void dumpEdges(NSVGrasterizer* r,
+@@ -1362,9 +1386,9 @@ static void dumpEdges(NSVGrasterizer* r, const char* name)
  }
  */
  
@@ -199,7 +204,7 @@ Index: nanosvg/src/nanosvgrast.h
  {
  	NSVGshape *shape = NULL;
  	NSVGedge *e = NULL;
-@@ -1390,7 +1413,7 @@ void nsvgRasterize(NSVGrasterizer* r,
+@@ -1394,7 +1418,7 @@ void nsvgRasterize(NSVGrasterizer* r,
  			r->freelist = NULL;
  			r->nedges = 0;
  
@@ -208,7 +213,7 @@ Index: nanosvg/src/nanosvgrast.h
  
  			// Scale and translate edges
  			for (i = 0; i < r->nedges; i++) {
-@@ -1407,14 +1430,14 @@ void nsvgRasterize(NSVGrasterizer* r,
+@@ -1411,14 +1435,14 @@ void nsvgRasterize(NSVGrasterizer* r,
  			// now, traverse the scanlines and find the intersections on each scanline, use non-zero rule
  			nsvg__initPaint(&cache, &shape->fill, shape->opacity);
  
@@ -226,7 +231,7 @@ Index: nanosvg/src/nanosvgrast.h
  
  //			dumpEdges(r, "edge.svg");
  
-@@ -1433,7 +1456,7 @@ void nsvgRasterize(NSVGrasterizer* r,
+@@ -1437,7 +1461,7 @@ void nsvgRasterize(NSVGrasterizer* r,
  			// now, traverse the scanlines and find the intersections on each scanline, use non-zero rule
  			nsvg__initPaint(&cache, &shape->stroke, shape->opacity);
  
@@ -235,7 +240,7 @@ Index: nanosvg/src/nanosvgrast.h
  		}
  	}
  
-@@ -1445,4 +1468,11 @@ void nsvgRasterize(NSVGrasterizer* r,
+@@ -1449,4 +1473,11 @@ void nsvgRasterize(NSVGrasterizer* r,
  	r->stride = 0;
  }
  
